@@ -3,7 +3,13 @@ from dataclasses import dataclass, asdict
 from typing import Any
 
 VALID_STATUSES = {"pending", "preparing", "ready", "delivered", "cancelled"}
-TERMINAL_STATUSES = {"delivered", "cancelled"}
+ALLOWED_STATUS_TRANSITIONS = {
+    "pending": {"preparing", "cancelled"},
+    "preparing": {"ready", "cancelled"},
+    "ready": {"delivered", "cancelled"},
+    "delivered": set(),
+    "cancelled": set(),
+}
 
 
 class ValidationError(ValueError):
@@ -102,9 +108,12 @@ class OrderService:
                 f"Status must be one of: {', '.join(sorted(VALID_STATUSES))}."
             )
 
-        if order.status in TERMINAL_STATUSES and status != order.status:
+        if status == order.status:
+            return order
+
+        if status not in ALLOWED_STATUS_TRANSITIONS[order.status]:
             raise ValidationError(
-                f"Order in '{order.status}' status cannot be changed."
+                f"Order cannot move from '{order.status}' to '{status}'."
             )
 
         order.status = status

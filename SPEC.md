@@ -12,7 +12,7 @@ The application is developed as a practical project for Homework 2: AI-Assisted 
 2. Validate all submitted data on the server.
 3. Calculate the order total as the sum of `quantity × unit_price`.
 4. Display all registered orders and retrieve one order by ID.
-5. Update an order status using the allowed status rules.
+5. Update an order status using the allowed status workflow.
 6. Return clear error messages for invalid requests and unknown orders.
 
 ## 3. User Stories
@@ -33,6 +33,7 @@ The application is developed as a practical project for Homework 2: AI-Assisted 
 - The total is calculated by the server and rounded to two decimal places.
 - Unknown order IDs return HTTP 404.
 - Only these statuses are accepted: `pending`, `preparing`, `ready`, `delivered`, `cancelled`.
+- Allowed transitions are `pending` to `preparing` or `cancelled`, `preparing` to `ready` or `cancelled`, and `ready` to `delivered` or `cancelled`.
 - `delivered` and `cancelled` are terminal states; they cannot be changed to another state.
 - Invalid requests return HTTP 400 with a readable error message.
 
@@ -47,6 +48,8 @@ The application supports the following order statuses:
 - `cancelled`: The order has been cancelled.
 
 The `delivered` and `cancelled` statuses are terminal states. Once an order reaches either of these states, its status cannot be changed to another status.
+
+Allowed transitions: `pending` → `preparing` or `cancelled`; `preparing` → `ready` or `cancelled`; `ready` → `delivered` or `cancelled`.
 
 ## 5. Technology Stack
 

@@ -143,6 +143,43 @@ def test_update_status(client):
     assert response.get_json()["status"] == "preparing"
 
 
+def test_allow_status_workflow(client):
+    created = client.post("/api/orders", json=valid_payload()).get_json()
+    order_id = created["id"]
+
+    for status in ("preparing", "ready", "delivered"):
+        response = client.patch(
+            f"/api/orders/{order_id}/status",
+            json={"status": status}
+        )
+        assert response.status_code == 200
+        assert response.get_json()["status"] == status
+
+
+def test_reject_skipping_status_workflow(client):
+    created = client.post("/api/orders", json=valid_payload()).get_json()
+
+    response = client.patch(
+        f"/api/orders/{created['id']}/status",
+        json={"status": "delivered"}
+    )
+
+    assert response.status_code == 400
+    assert "cannot move" in response.get_json()["error"]
+
+
+def test_allow_cancellation_before_delivery(client):
+    created = client.post("/api/orders", json=valid_payload()).get_json()
+
+    response = client.patch(
+        f"/api/orders/{created['id']}/status",
+        json={"status": "cancelled"}
+    )
+
+    assert response.status_code == 200
+    assert response.get_json()["status"] == "cancelled"
+
+
 def test_reject_invalid_status(client):
     created = client.post("/api/orders", json=valid_payload()).get_json()
 
@@ -158,6 +195,14 @@ def test_terminal_delivered_cannot_be_changed(client):
     created = client.post("/api/orders", json=valid_payload()).get_json()
     order_id = created["id"]
 
+    client.patch(
+        f"/api/orders/{order_id}/status",
+        json={"status": "preparing"}
+    )
+    client.patch(
+        f"/api/orders/{order_id}/status",
+        json={"status": "ready"}
+    )
     client.patch(
         f"/api/orders/{order_id}/status",
         json={"status": "delivered"}

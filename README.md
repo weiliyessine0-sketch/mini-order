@@ -5,12 +5,13 @@ A small web application for creating and managing restaurant orders. It is the g
 ## Features
 
 - Create an order with one or more menu items.
+- Add and remove multiple items in the browser form.
 - Validate customer names, item names, quantities, and prices.
 - Calculate the order total automatically.
 - List all orders and retrieve an order by ID.
 - Change order status (`pending`, `preparing`, `ready`, `delivered`, `cancelled`).
 - Reject invalid input and invalid status transitions.
-- Prevent status changes after an order becomes `delivered` or `cancelled`.
+- Enforce the workflow `pending` → `preparing` → `ready` → `delivered`, with cancellation allowed before delivery.
 
 ## Technology Stack
 
@@ -80,11 +81,7 @@ Update order status:
 
 ### Automated Testing
 
-- Total automated tests executed: 18
-- Tests passed: 18
-- Tests failed: 0
-- Execution time: 0.24 seconds
-- Result: All automated tests passed successfully.
+Run `python -m pytest -v` to see the current test count and results. Results can change as tests are added or modified.
 
 ### Manual Testing
 

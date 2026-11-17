@@ -95,29 +95,15 @@ PAGE = '''
                 required
             >
 
-            <input
-                id="item"
-                placeholder="Item name"
-                required
-            >
-
-            <input
-                id="qty"
-                type="number"
-                min="1"
-                step="1"
-                value="1"
-                required
-            >
-
-            <input
-                id="price"
-                type="number"
-                min="0"
-                step="0.01"
-                placeholder="Unit price"
-                required
-            >
+            <div id="itemRows">
+                <div class="item-row">
+                    <input class="item-name" placeholder="Item name" required>
+                    <input class="item-quantity" type="number" min="1" step="1" value="1" aria-label="Quantity" required>
+                    <input class="item-price" type="number" min="0" step="0.01" placeholder="Unit price" aria-label="Unit price" required>
+                    <button type="button" class="remove-item" aria-label="Remove item" hidden>Remove</button>
+                </div>
+            </div>
+            <button id="addItemButton" type="button">Add another item</button>
 
             <button type="submit">Create order</button>
         </form>
@@ -140,20 +126,46 @@ PAGE = '''
 <script>
 const orderForm = document.getElementById('orderForm');
 const customerInput = document.getElementById('customer');
-const itemInput = document.getElementById('item');
-const qtyInput = document.getElementById('qty');
-const priceInput = document.getElementById('price');
+const itemRows = document.getElementById('itemRows');
+const addItemButton = document.getElementById('addItemButton');
 const messageElement = document.getElementById('message');
 const ordersElement = document.getElementById('orders');
 const refreshButton = document.getElementById('refreshButton');
 
-const statuses = [
-    'pending',
-    'preparing',
-    'ready',
-    'delivered',
-    'cancelled'
-];
+function updateRemoveButtons() {
+    const rows = itemRows.querySelectorAll('.item-row');
+    rows.forEach(row => {
+        row.querySelector('.remove-item').hidden = rows.length === 1;
+    });
+}
+
+addItemButton.addEventListener('click', () => {
+    const row = document.createElement('div');
+    row.className = 'item-row';
+    row.innerHTML = `
+        <input class="item-name" placeholder="Item name" required>
+        <input class="item-quantity" type="number" min="1" step="1" value="1" aria-label="Quantity" required>
+        <input class="item-price" type="number" min="0" step="0.01" placeholder="Unit price" aria-label="Unit price" required>
+        <button type="button" class="remove-item" aria-label="Remove item">Remove</button>
+    `;
+    itemRows.appendChild(row);
+    updateRemoveButtons();
+});
+
+itemRows.addEventListener('click', event => {
+    if (event.target.classList.contains('remove-item')) {
+        event.target.closest('.item-row').remove();
+        updateRemoveButtons();
+    }
+});
+
+const nextStatuses = {
+    pending: ['preparing', 'cancelled'],
+    preparing: ['ready', 'cancelled'],
+    ready: ['delivered', 'cancelled'],
+    delivered: [],
+    cancelled: []
+};
 
 function escapeHtml(value) {
     return String(value).replace(/[&<>"']/g, character => ({
@@ -190,7 +202,7 @@ async function loadOrders() {
                 `${escapeHtml(product.name)} × ${product.quantity}`
             ).join(', ');
 
-            const options = statuses.map(status => `
+            const options = [order.status, ...nextStatuses[order.status]].map(status => `
                 <option value="${status}"
                     ${status === order.status ? 'selected' : ''}>
                     ${status}
@@ -240,11 +252,11 @@ orderForm.addEventListener('submit', async event => {
 
     const payload = {
         customer: customerInput.value,
-        items: [{
-            name: itemInput.value,
-            quantity: Number(qtyInput.value),
-            unit_price: Number(priceInput.value)
-        }]
+        items: Array.from(itemRows.querySelectorAll('.item-row')).map(row => ({
+            name: row.querySelector('.item-name').value,
+            quantity: Number(row.querySelector('.item-quantity').value),
+            unit_price: Number(row.querySelector('.item-price').value)
+        }))
     };
 
     try {
@@ -268,7 +280,9 @@ orderForm.addEventListener('submit', async event => {
             `Order #${data.id} created. Total: ${Number(data.total).toFixed(2)}`;
 
         orderForm.reset();
-        qtyInput.value = 1;
+        itemRows.querySelectorAll('.item-row:not(:first-child)').forEach(row => row.remove());
+        itemRows.querySelector('.item-quantity').value = 1;
+        updateRemoveButtons();
 
         await loadOrders();
 

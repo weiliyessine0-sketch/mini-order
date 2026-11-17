@@ -24,6 +24,9 @@ The following test cases define the scenarios selected for testing the applicati
 | TC16 | Whitespace item name | name='  ' | 400 | Boundary/Negative |
 | TC17 | Non-object item | items=['Pizza'] | 400 | Negative |
 | TC18 | Missing JSON body | POST without JSON | 400 | Negative |
+| TC19 | Skip workflow | pending → delivered | 400 | Negative |
+| TC20 | Follow workflow | pending → preparing → ready → delivered | 200 at each step | Functional |
+| TC21 | Cancel active order | pending → cancelled | 200 | Functional |
 
 ## 2. Automated Testing Results
 
@@ -37,14 +40,12 @@ python -m pytest -v
 
 | Metric | Result |
 |---|---:|
-| Automated tests executed | 18 |
-| Passed | 18 |
-| Failed | 0 |
-| Execution time | 0.24 seconds |
+| Automated tests executed | See current pytest output |
+| Passed | See current pytest output |
+| Failed | See current pytest output |
+| Execution time | See current pytest output |
 
-**Overall result: PASS**
-
-All 18 automated tests in `tests/test_orders.py` passed successfully.
+Record the actual result after running the command. Do not assume the planned test cases have all been executed.
 
 Note: The planned test cases above describe the testing scenarios. They should not all be considered individually executed unless they are mapped to an actual automated test or a recorded manual execution.
 

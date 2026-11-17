@@ -15,7 +15,7 @@ The testing process focuses on order creation, input validation, total calculati
 - Listing all orders.
 - Retrieving a specific order.
 - Updating order statuses.
-- Preventing status changes after an order reaches a terminal status.
+- Enforcing valid status transitions and preventing changes after a terminal status.
 - Testing the main browser workflow and API endpoints.
 
 ### Excluded
@@ -117,12 +117,7 @@ Testing can begin when:
 
 - Testing framework: pytest.
 - Execution command: `python -m pytest -v`.
-- Total automated tests executed: 18.
-- Passed: 18.
-- Failed: 0.
-- Execution time: 0.24 seconds.
-
-**Result:** All 18 automated tests passed successfully.
+- Record the latest actual test count, pass/fail count, and duration after each run. Do not retain stale results as current.
 
 ### 8.2 Manual Testing
 
@@ -170,8 +165,4 @@ The main project risks include:
 
 ## 12. Conclusion
 
-The testing results show that the main order management features work correctly.
-
-All 18 automated tests passed, and all seven recorded manual tests passed.
-
-Further testing of the remaining planned scenarios is recommended to improve test coverage and confidence in the application.
+The test plan covers the main order management features. Update this conclusion using the latest actual automated and manual execution evidence before submission.

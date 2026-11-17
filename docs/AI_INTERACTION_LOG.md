@@ -12,6 +12,7 @@ This log records the AI assistance used during the Homework 2 project. It docume
 | 01/11/2026 | ChatGPT — GPT-6 | Verify the automated tests and run the application. | Provided instructions for running pytest and starting the Flask application. | The user executed the tests and confirmed 18 passed and 0 failed. |
 | 01/11/2026 | ChatGPT — GPT-6 | Verify order status rules through manual testing. | Suggested testing terminal statuses and checking whether further status changes are prevented. | The user tested the application and confirmed that changing an order after `delivered` or `cancelled` was prevented. |
 | 01/11/2026 | ChatGPT — GPT-6 | Improve project documentation and update testing results. | Helped update README.md, TEST_PLAN.md, and TEST_CASES.md to reflect the latest test results. | The user reviewed and integrated the updated documentation. |
+| 18/11/2026 | ChatGPT — GPT-6 | Review the homework instructions and repository, then improve the implementation against the specification. | Identified the one-item-only browser form, unrestricted status jumps, stale reported test counts, and pytest collection failure caused by the test filename. Implemented multi-item entry, explicit status transitions, relevant tests, and documentation updates. | The user should review the changes, run the app in a browser, and retain this interaction as evidence; the team should add its own contributions and actual observations. |
 
 ## AI Limitations and Human Responsibility
 
@@ -29,7 +30,7 @@ This log records the AI assistance used during the Homework 2 project. It docume
 - Exact prompts used by each team member.
 - AI-generated code and suggestions.
 - Human code modifications and Git commits.
-- Automated test output showing 18 passed tests and 0 failed tests.
+- Automated test output showing the latest actual result (21 passed after the 18/11/2026 changes).
 - Screenshots of successful manual tests.
 - Evidence of bugs, corrections, and limitations discovered during testing.
 
