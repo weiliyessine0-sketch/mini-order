@@ -1,4 +1,3 @@
-
 def valid_payload():
     return {
         "customer": "Amira",
@@ -229,5 +228,14 @@ def test_terminal_cancelled_cannot_be_changed(client):
         f"/api/orders/{order_id}/status",
         json={"status": "preparing"}
     )
+
+    assert response.status_code == 400
+
+
+def test_reject_decimal_quantity(client):
+    payload = valid_payload()
+    payload["items"][0]["quantity"] = 1.5
+
+    response = client.post("/api/orders", json=payload)
 
     assert response.status_code == 400
